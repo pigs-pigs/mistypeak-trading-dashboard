@@ -1,0 +1,8 @@
+{
+  "name": "Mistypeak Trading Dashboard",
+  "short_name": "MPTD",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0E1618",
+  "description": "The dashboard used by admins to track trades in mistypeak"
+}
