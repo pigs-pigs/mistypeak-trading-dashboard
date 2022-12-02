@@ -12,7 +12,13 @@ async function getUserID(name) {
     });
 }
 
-async function getUsernames(arrayOfIds) {
+async function getUsernames(allIds) {
+  let arrayOfIds = [];
+  allIds.forEach((val) => {
+    if (arrayOfIds.indexOf(val) < 0) {
+      arrayOfIds.push(val);
+    }
+  });
   return await axios
     .get(endpoint + "/usernames/" + arrayOfIds.join(","))
     .then(function (response) {
