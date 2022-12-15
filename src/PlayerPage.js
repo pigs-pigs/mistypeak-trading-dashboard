@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams, Outlet } from "react-router-dom";
 
-import { getAllTrades, getUsernames } from "./API.js";
+import { getAllTrades, getUsernames, getInventory } from "./API.js";
 import TradeInfo from "./TradeInfo";
 
 export default function PlayerPage() {
   let [trades, setTrades] = useState([]);
   let [currentTrade, setCurrentTrade] = useState(null);
+  let [currentInv, setCurrentInv] = useState(null);
 
   const { userId } = useParams();
   const location = useLocation();
   const lastProps = location.state;
+  const OpenInventoryPopup = async () => {
+    if (!currentInv) {
+      let tempData = await getInventory(userId);
+      setCurrentInv(tempData.Accessories);
+    }
+  };
   useEffect(() => {
     let userIdsToGet = [];
     const formatData = (TradeId) => {
@@ -82,13 +89,20 @@ export default function PlayerPage() {
 
   return (
     <>
-      <h2>
+      <h2
+        style={{
+          width: "60%",
+          marginLeft: "40%",
+          transform: "translate(-50%)"
+        }}
+      >
         All trades for {lastProps && lastProps.username} ({userId}){" "}
       </h2>
       <div
         style={{
-          width: "70%",
-          left: "50%",
+          width: "60%",
+          minWidth: 230,
+          left: "40%",
           position: "absolute",
           transform: "translate(-50%)",
           height: "70%",
@@ -102,6 +116,11 @@ export default function PlayerPage() {
           return getTradeDiv(val);
         })}
       </div>
+      {currentInv == null && (
+        <button className="invButton" onClick={OpenInventoryPopup}>
+          View Inventory
+        </button>
+      )}
       {currentTrade && (
         <TradeInfo
           Data={currentTrade}
@@ -109,6 +128,34 @@ export default function PlayerPage() {
           Viewing={lastProps && lastProps.username}
         />
       )}
+
+      <h2
+        style={{
+          width: "40%",
+          left: "86%",
+          transform: "translate(-50%)",
+          top: 0,
+          position: "absolute"
+        }}
+      >
+        Inventory
+      </h2>
+      <div
+        style={{
+          width: "40%",
+          minWidth: 230,
+          left: "86%",
+          position: "absolute",
+          transform: "translate(-50%)",
+          height: "70%",
+          overflowY: "scroll",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column"
+        }}
+      >
+        {currentInv !== null && currentInv.map((val) => <p>{val}</p>)}
+      </div>
     </>
   );
 }

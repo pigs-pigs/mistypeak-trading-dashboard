@@ -54,4 +54,16 @@ async function getTradeData(tradeId) {
     });
 }
 
-export { getUserID, getUsernames, getAllTrades, getTradeData };
+async function getInventory(userId) {
+  let apiKey = window.localStorage.getItem("API_KEY").replace("+", "%2B");
+  return await axios
+    .get(endpoint + "/inventory/" + userId + "?key=" + apiKey)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+export { getUserID, getUsernames, getAllTrades, getTradeData, getInventory };

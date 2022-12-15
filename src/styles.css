@@ -149,3 +149,19 @@ input {
   top: 50%;
   transform: translate(-50%, -50%);
 }
+
+.invButton {
+  position: absolute;
+  bottom: 9%;
+  left: 86%;
+  background-color: var(--popup);
+  cursor: pointer;
+  padding: 6px 15px;
+  border-radius: 6px;
+  box-shadow: 1px 1px 8px black;
+  color: var(--light);
+  border: none;
+  outline: none;
+  z-index: 1000;
+  transform: translate(-50%, -100%);
+}
