@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { getTradeData } from "./API";
 import CloseIcon from "@mui/icons-material/Close";
 export default function TradeInfo(props) {
   const Data = props.Data;
+  const ignoreFields = ["Cancelled", "P1State", "P2State", "Complete"];
   let [TradeData, setTradeData] = useState({});
   useEffect(() => {
     const getTrade = async () => {
@@ -17,9 +17,13 @@ export default function TradeInfo(props) {
     if (Array.isArray(data)) {
       return "[ " + data.join(", ") + " ] ";
     } else if (typeof data === "object" && data !== null) {
-      return Object.keys(data).map((key) => {
-        return key + ": " + formatChild(data[key]);
-      });
+      return (
+        "{ " +
+        Object.keys(data).map((key) => {
+          return key + ": " + formatChild(data[key]);
+        }) +
+        "}"
+      );
     } else if (Number(data) && Number(data) > 50000) {
       return new Date(Number(data) * 1000).toLocaleString("en-us");
     } else return data + " ";
@@ -33,21 +37,74 @@ export default function TradeInfo(props) {
         style={{
           fontSize: 40,
           position: "absolute",
-          right: 20,
-          cursor: "pointer"
+          right: 17,
+          cursor: "pointer",
         }}
       />
-      <code>
-        <ul style={{ textAlign: "left" }}>
-          {Object.keys(TradeData)
-            .sort()
-            .map((key) => (
-              <li>
-                {key}: {formatChild(TradeData[key])}
-              </li>
+      <h2>{TradeData.TradeId || "Id Not Found"}</h2>
+      <table>
+        <tr>
+          <th>{TradeData.Player1 && TradeData.Player1[1]}</th>
+          <th>{TradeData.Player2 && TradeData.Player2[1]}</th>
+        </tr>
+        <tr>
+          <td>
+            {((TradeData.P1Offer && TradeData.P1Offer.Accessories) || []).map(
+              (name) => (
+                <p>{name}</p>
+              )
+            )}
+          </td>
+          <td>
+            {((TradeData.P2Offer && TradeData.P2Offer.Accessories) || []).map(
+              (name) => (
+                <p>{name}</p>
+              )
+            )}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {(
+              (TradeData.P1Offer && TradeData.P1Offer.Runes) ||
+              0
+            ).toLocaleString("en-US")}
+          </td>
+          <td>
+            {(
+              (TradeData.P2Offer && TradeData.P2Offer.Runes) ||
+              0
+            ).toLocaleString("en-US")}
+          </td>
+        </tr>
+      </table>
+      <h3>
+        {(TradeData.TimeBegan &&
+          new Date(Number(TradeData.TimeBegan) * 1000).toLocaleString(
+            "en-us"
+          )) +
+          "  -  " +
+          (TradeData.TimeEnded &&
+            new Date(Number(TradeData.TimeEnded) * 1000).toLocaleTimeString(
+              "en-us"
             ))}
-        </ul>
-      </code>
+      </h3>
+
+      {TradeData.Cancelled && (
+        <p
+          style={{
+            position: "absolute",
+            bottom: "3%",
+            color: "red",
+            textAlign: "center",
+            fontSize: "1.8rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          Trade Cancelled
+        </p>
+      )}
     </div>
   );
 }
