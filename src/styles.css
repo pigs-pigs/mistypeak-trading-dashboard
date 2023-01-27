@@ -124,6 +124,10 @@ input {
   font-size: 1.3em;
 }
 
+.MuiCircularProgress-colorPrimary {
+  color: var(--light);
+}
+
 .tradeList {
   padding-left: 10px;
   width: 100%;
