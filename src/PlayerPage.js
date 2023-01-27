@@ -1,3 +1,4 @@
+import zIndex from "@mui/material/styles/zIndex";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams, Outlet } from "react-router-dom";
 
@@ -62,7 +63,7 @@ export default function PlayerPage() {
     };
     setTradeData();
   }, [userId]);
-
+ 
   const getTradeDiv = (TradeData) => {
     return (
       <div
@@ -135,7 +136,8 @@ export default function PlayerPage() {
           left: "86%",
           transform: "translate(-50%)",
           top: 0,
-          position: "absolute"
+          position: "absolute",
+          zIndex: -1
         }}
       >
         Inventory

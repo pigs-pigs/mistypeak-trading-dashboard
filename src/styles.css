@@ -154,6 +154,27 @@ input {
   transform: translate(-50%, -50%);
 }
 
+table {
+  border: 1px solid white;
+  border-collapse: collapse;
+  width: 85%;
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  transform: translateX(-50%);
+}
+
+th,
+td {
+  border: 1px solid white;
+  border-collapse: collapse;
+  padding: 5px;
+}
+
+td {
+  padding: 10px;
+}
+
 .invButton {
   position: absolute;
   bottom: 9%;
