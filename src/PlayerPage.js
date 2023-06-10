@@ -1,24 +1,20 @@
 import zIndex from "@mui/material/styles/zIndex";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams, Outlet } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
-import { getAllTrades, getUsernames, getInventory } from "./API.js";
+import { getAllData, getUsernames, getActivity } from "./API.js";
 import TradeInfo from "./TradeInfo";
 
 export default function PlayerPage() {
   let [trades, setTrades] = useState([]);
   let [currentTrade, setCurrentTrade] = useState(null);
   let [currentInv, setCurrentInv] = useState(null);
+  let [inGame, setInGame] = useState(false);
 
   const { userId } = useParams();
   const location = useLocation();
   const lastProps = location.state;
-  const OpenInventoryPopup = async () => {
-    if (!currentInv) {
-      let tempData = await getInventory(userId);
-      setCurrentInv(tempData.Accessories);
-    }
-  };
+
   useEffect(() => {
     let userIdsToGet = [];
     const formatData = (TradeId) => {
@@ -38,10 +34,11 @@ export default function PlayerPage() {
     };
 
     const setTradeData = async () => {
-      let data = await getAllTrades(userId);
+      let data = await getAllData(userId);
+      setCurrentInv(data[1]);
 
       let formattedData = [];
-      data.map((id) => {
+      data[0].map((id) => {
         return formattedData.push(formatData(id));
       });
       let UsernamesFromID = await getUsernames(userIdsToGet);
@@ -55,15 +52,21 @@ export default function PlayerPage() {
               (userData.displayName !== userData.username
                 ? " (@" + userData.username + ")"
                 : "")
-            : obj.OtherPlayer
+            : obj.OtherPlayer,
         };
       });
 
       setTrades(finalData);
     };
     setTradeData();
+
+    const setGameActivity = async () => {
+      let data = await getActivity(userId);
+      setInGame(data);
+    };
+    setGameActivity();
   }, [userId]);
- 
+
   const getTradeDiv = (TradeData) => {
     return (
       <div
@@ -79,7 +82,7 @@ export default function PlayerPage() {
             width: "50%",
             textAlign: "left",
             posiion: "absolute",
-            marginLeft: "50%"
+            marginLeft: "50%",
           }}
         >
           {TradeData.Date}
@@ -94,10 +97,25 @@ export default function PlayerPage() {
         style={{
           width: "60%",
           marginLeft: "40%",
-          transform: "translate(-50%)"
+          transform: "translate(-50%)",
         }}
       >
-        All trades for {lastProps && lastProps.username} ({userId}){" "}
+        {lastProps && lastProps.username} ({userId})
+        {inGame && (
+          <span
+            style={{
+              backgroundColor: "green",
+              color: "transparent",
+              width: 10,
+              height: 10,
+              paddingRight: 7,
+              borderRadius: 50,
+              marginLeft: 6,
+            }}
+          >
+            ...
+          </span>
+        )}
       </h2>
       <div
         style={{
@@ -110,23 +128,19 @@ export default function PlayerPage() {
           overflowY: "scroll",
           display: "flex",
           alignItems: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         {trades.map((val) => {
           return getTradeDiv(val);
         })}
       </div>
-      {currentInv == null && (
-        <button className="invButton" onClick={OpenInventoryPopup}>
-          View Inventory
-        </button>
-      )}
+
       {currentTrade && (
         <TradeInfo
           Data={currentTrade}
           CloseTrade={setCurrentTrade}
-          Viewing={lastProps && lastProps.username}
+          PageId={userId}
         />
       )}
 
@@ -137,7 +151,7 @@ export default function PlayerPage() {
           transform: "translate(-50%)",
           top: 0,
           position: "absolute",
-          zIndex: -1
+          zIndex: -1,
         }}
       >
         Inventory
@@ -153,7 +167,7 @@ export default function PlayerPage() {
           overflowY: "scroll",
           display: "flex",
           alignItems: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         {currentInv !== null && currentInv.map((val) => <p>{val}</p>)}
