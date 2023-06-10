@@ -1,18 +1,26 @@
 import { useState, useEffect } from "react";
 import { getTradeData } from "./API";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "react-router-dom";
+
 export default function TradeInfo(props) {
   const Data = props.Data;
-  const ignoreFields = ["Cancelled", "P1State", "P2State", "Complete"];
+  // const ignoreFields = ["Cancelled", "P1State", "P2State", "Complete"];
   let [TradeData, setTradeData] = useState({});
   useEffect(() => {
     const getTrade = async () => {
       let data = await getTradeData(Data.Id);
-
+      if (data.Player2[0] == props.PageId) {
+        let og = data.Player1;
+        data.Player1 = data.Player2;
+        data.Player2 = og;
+        console.log(data);
+      }
       setTradeData(data);
     };
     getTrade();
   }, []);
+
   const formatChild = (data) => {
     if (Array.isArray(data)) {
       return "[ " + data.join(", ") + " ] ";
@@ -45,7 +53,14 @@ export default function TradeInfo(props) {
       <table>
         <tr>
           <th>{TradeData.Player1 && TradeData.Player1[1]}</th>
-          <th>{TradeData.Player2 && TradeData.Player2[1]}</th>
+          <th>
+            <Link
+              target="_blank"
+              to={TradeData.Player2 ? "/users/" + TradeData.Player2[0] : ""}
+            >
+              {TradeData.Player2 && TradeData.Player2[1]}
+            </Link>
+          </th>
         </tr>
         <tr>
           <td>

@@ -147,11 +147,12 @@ input {
   background: var(--popup);
   border-radius: 10px;
   padding: 10px;
-  box-shadow: 4px 4px 20px black;
+  box-shadow: 4px 4px 30px black;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
 table {

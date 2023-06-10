@@ -29,12 +29,12 @@ async function getUsernames(allIds) {
     });
 }
 
-async function getAllTrades(userId) {
+async function getAllData(userId) {
   let apiKey = window.localStorage.getItem("API_KEY").replace("+", "%2B");
   return await axios
     .get(endpoint + "/alltrades/" + userId + "?key=" + apiKey)
     .then(function (response) {
-      return response.data;
+      return response.data; //0 = Trades, 1 = Accessories
     })
     .catch(function (error) {
       console.log(error);
@@ -53,7 +53,7 @@ async function getTradeData(tradeId) {
       console.log(error);
     });
 }
-
+/*
 async function getInventory(userId) {
   let apiKey = window.localStorage.getItem("API_KEY").replace("+", "%2B");
   return await axios
@@ -64,6 +64,27 @@ async function getInventory(userId) {
     .catch(function (error) {
       console.log(error);
     });
+}*/
+
+async function getActivity(userId) {
+  return await axios
+    .get(endpoint + "/activity/" + userId)
+    .then(function (response) {
+      return (
+        response.data.userPresenceType == 2 ||
+        response.data.userPresenceType == 4
+      );
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
-export { getUserID, getUsernames, getAllTrades, getTradeData, getInventory };
+export {
+  getUserID,
+  getUsernames,
+  getAllData,
+  getTradeData,
+ // getInventory,
+  getActivity,
+};
