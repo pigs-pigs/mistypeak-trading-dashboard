@@ -143,7 +143,7 @@ export default function PlayerPage() {
           PageId={userId}
         />
       )}
-
+      
       <h2
         style={{
           width: "40%",

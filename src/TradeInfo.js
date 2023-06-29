@@ -14,7 +14,10 @@ export default function TradeInfo(props) {
         let og = data.Player1;
         data.Player1 = data.Player2;
         data.Player2 = og;
-        console.log(data);
+        
+        let og2 = data.P1Offer;
+        data.P1Offer = data.P2Offer;
+        data.P2Offer = og2;
       }
       setTradeData(data);
     };
